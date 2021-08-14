@@ -1,0 +1,1 @@
+typedef void QueryCall(List<Map> maps);
