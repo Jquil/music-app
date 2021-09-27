@@ -33,7 +33,12 @@ path_provider: ^2.0.2
 
 #### JSON解析
 ```
-json_annotation: 4.0.0
+dependencies:
+  json_annotation: 4.0.0
+
+dev_dependencies:
+  json_serializable: 4.0.3
+  build_runner: any
 ```
 
 #### 其他
@@ -43,10 +48,4 @@ fluttertoast: ^8.0.8
 font_awesome_flutter: ^9.1.0
 ```
 
-
-# 需求
-
-1. [背景模糊图](http://findsrc.com/flutter/detail/8805)
-
-2. 使用阿里巴巴普惠体：[Flutter自定义字体](https://flutterchina.club/custom-fonts/)
 
