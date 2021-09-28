@@ -311,6 +311,8 @@ MaterialApp(
 
 25. [Flutter 状态视图的封装](https://blog.csdn.net/daividtu/article/details/107084796)
 
+26. [Flutter 背景渐变色](https://www.webascii.cn/article/5ef2cb74071be112473165e4)
+
 # 小结
 
 
@@ -320,5 +322,6 @@ MaterialApp(
 
 `select last_insert_rowid() from table;`
 
-
 Scaffold的`bottomSheet`属性用来写播放栏widget，而`AppBar`用来显示title
+
+[好看的背景色1](https://webkul.github.io/coolhue/) | [好看的背景色2](https://webgradients.com/) | [好看的背景色3](https://uigradients.com/#Orca)
