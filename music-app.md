@@ -313,6 +313,8 @@ MaterialApp(
 
 26. [Flutter 背景渐变色](https://www.webascii.cn/article/5ef2cb74071be112473165e4)
 
+27. [VSCode WiFi调试Flutter应用](https://www.jianshu.com/p/fb8eebc8a2c0)
+
 # 小结
 
 
