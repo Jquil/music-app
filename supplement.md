@@ -313,4 +313,6 @@ Future<Uint8List> getData(String path, [Map<String, dynamic>? params]) async {
 
 6. 收藏歌曲时，对应歌单歌曲数量没有增加（删除亦是如此）
 
-7. 这周实现（缓存、修改个人资料）以及修复以上BUG
+7. 点击“确定更新”后没有关闭Dialog
+
+8. 这周实现（缓存、修改个人资料）以及修复以上BUG
