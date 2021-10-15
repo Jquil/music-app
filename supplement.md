@@ -297,8 +297,6 @@ Future<Uint8List> getData(String path, [Map<String, dynamic>? params]) async {
 ```
 
 
-以及后续增加换源功能
-
 # 2021/10/15
 
 1. 息屏后自动播放下一首时，播放歌曲与实际歌曲不一致
@@ -316,3 +314,10 @@ Future<Uint8List> getData(String path, [Map<String, dynamic>? params]) async {
 7. 点击“确定更新”后没有关闭Dialog
 
 8. 这周实现（缓存、修改个人资料）以及修复以上BUG
+
+
+# 后续
+
+1. 增加换源功能
+
+2. 修改歌单表结构，增加一个播放歌曲地址的栏位
