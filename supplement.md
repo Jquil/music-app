@@ -311,7 +311,9 @@ Future<Uint8List> getData(String path, [Map<String, dynamic>? params]) async {
 
 7. 点击“确定更新”后没有关闭Dialog
 
-8. 这周实现（缓存、修改个人资料）以及修复以上BUG
+8. 歌词页添加Action Button(喜欢，收藏到歌单，缓存)
+
+9. 这周实现（缓存、修改个人资料）以及修复以上BUG
 
 
 # 后续
