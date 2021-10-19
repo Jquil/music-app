@@ -339,6 +339,8 @@ Future<Uint8List> getData(String path, [Map<String, dynamic>? params]) async {
 
 5. 实验“通知”功能能否解决在息屏后不能自动播放歌曲问题
 
+6. 修复歌曲页在夜间模式时，ActionItem颜色为白色问题
+
 # 后续
 
 1. 增加换源功能
