@@ -294,6 +294,18 @@ Future<Uint8List> getData(String path, [Map<String, dynamic>? params]) async {
   }
 ```
 
+# 通知
+
+加依赖：`flutter_local_notifications: ^9.0.0`
+
+添加权限：（先不加）
+```
+<uses-permission android:name="android.permission.VIBRATE"/>
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+```
+
+参考文章：[Flutter Local Notfications Example](https://camposha.info/flutter/flutter-local-notification/)
+
 
 # 2021/10/15
 
@@ -315,6 +327,17 @@ Future<Uint8List> getData(String path, [Map<String, dynamic>? params]) async {
 
 9. 这周实现（缓存、修改个人资料）以及修复以上BUG
 
+# 2021/10/23
+
+1. 修复“本地缓存”重复加载
+
+2. 实现“修改资料”
+
+3. 实现“收藏歌手”：
+
+4. 开放“我的喜欢”入口
+
+5. 实验“通知”功能能否解决在息屏后不能自动播放歌曲问题
 
 # 后续
 
