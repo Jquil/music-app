@@ -1,16 +1,27 @@
-# demo
+# 前言
 
-A new Flutter application.
+因为版权问题，所以在听歌的时候总是需要切换APP，麻烦
 
-## Getting Started
+并且，因为穷，听不起付费歌曲
 
-This project is a starting point for a Flutter application.
+所以就萌生了自己动手开发一个音乐APP的念头
 
-A few resources to get you started if this is your first Flutter project:
+因为我想弄个跨平台的APP，在一番考量后决定用Flutter作为跨平台框架
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# 实现
+
+1. 搜集数据接口
+2. 定下基本框架
+3. 设计数据库
+4. 思考操作流程
+
+然后就可以开始搬砖了~
+
+# 界面展示
+
+等待更新
+
+# 版本更新
+
+等待更新
