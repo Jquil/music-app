@@ -71,7 +71,7 @@
 
 # 文章
 
-1. [条形固定值进度条](https://blog.csdn.net/zl18603543572/article/details/94581899)（播放进度）以及 [进度指示器](https://book.flutterchina.club/chapter3/progress.html)
+1. [条形固定值进度条](https://blog.csdn.net/zl18603543572/article/details/94581899)以及 [进度指示器](https://book.flutterchina.club/chapter3/progress.html)
 
 2. [图片圆角与圆形](https://www.jianshu.com/p/33a72d85df71)
 
@@ -101,10 +101,10 @@
 
 15. [Flutter SliverAppBar全解析，你要的效果都在这了！](https://blog.csdn.net/yechaoa/article/details/90701321)
 
-16.  头部搜索框实现
-      [Flutter - 导航栏搜索框实现](https://blog.csdn.net/iotjin/article/details/105977742)
-      [Flutter TextField 使用prefixIcon图标和文字间距问题](https://www.cnblogs.com/zhouyong0330/p/14317622.html)
-      [Flutter文本输入框TextFormField显示清除按钮](http://findsrc.com/article/flutter_textformfield_clear_text)
+16.
+     - [Flutter - 导航栏搜索框实现](https://blog.csdn.net/iotjin/article/details/105977742)
+     - [Flutter TextField 使用prefixIcon图标和文字间距问题](https://www.cnblogs.com/zhouyong0330/p/14317622.html)
+     - [Flutter文本输入框TextFormField显示清除按钮](http://findsrc.com/article/flutter_textformfield_clear_text)
 
 17. [Flutter 去除安卓的半透明的状态栏](https://www.cnblogs.com/lude1994/p/14319005.html)
 
