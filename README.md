@@ -75,6 +75,11 @@
 -- 更新时间：2021/10/24
 
 
+### V5.0.0
+
+1. 修改播放页歌词UI
+
+
 # 文章
 
 1. [条形固定值进度条](https://blog.csdn.net/zl18603543572/article/details/94581899)以及 [进度指示器](https://book.flutterchina.club/chapter3/progress.html)
@@ -131,3 +136,5 @@
 25. [Flutter 状态视图的封装](https://blog.csdn.net/daividtu/article/details/107084796)
 
 26. [Flutter 背景渐变色](https://www.webascii.cn/article/5ef2cb74071be112473165e4)
+
+27. [flutter_local_notifications 填坑](https://blog.csdn.net/Katie_fly/article/details/109694116)
