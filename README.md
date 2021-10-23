@@ -20,7 +20,10 @@
 
 # 界面展示
 
-等待更新
+| column1 | column2 |column3|column4|
+| ----------- | ----------- |----------- |----------- |
+| ![](https://static.jqwong.cn/202110231959184.jpg)| ![](https://static.jqwong.cn/202110231959214.jpg)|![](https://static.jqwong.cn/202110231959214.jpg)|![](https://static.jqwong.cn/202110231959210.jpg)|
+|![](https://static.jqwong.cn/202110231959212.jpg)|![](https://static.jqwong.cn/202110231959182.jpg)|![](https://static.jqwong.cn/202110231959183.jpg)|![](https://static.jqwong.cn/202110231959209.jpg)|
 
 # 版本更新
 
