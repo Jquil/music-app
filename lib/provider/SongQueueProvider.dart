@@ -1,46 +1,45 @@
-import 'package:demo/model/Song.dart';
-import 'package:demo/utils/MyAudio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:music/model/MSong.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:music/utils/MyAudio.dart';
 
 class SongQueueProvider with ChangeNotifier{
-  List<Song> _list = [];
+  List<MSong> queue = [];
+  int currentIndex = 0,lastTime = 0;
 
-  List<Song> get list => _list;
-
-  void setData(BuildContext context,List<Song> data){
-    _push(data);
-    _doTask(context);
+  void setQueue(List<MSong> list){
+    queue = list;
+    currentIndex = 0;
+    print("setQueue：${queue[0].name}");
     notifyListeners();
   }
 
   void next(BuildContext context){
-    _pop();
-    _doTask(context);
-    notifyListeners();
-  }
-
-  void _push(List<Song> data){
-    _popAll();
-    _list.addAll(data);
-  }
-
-  void _pop(){
-    if(_list.length == 0)
+    var temp = DateTime.now().millisecondsSinceEpoch;
+    if(temp - lastTime < 1000){
       return;
-    _list.removeAt(0);
+    }
+    lastTime = temp;
+    if(currentIndex + 1 < queue.length){
+      currentIndex++;
+      //print("next：index = ${currentIndex} -- name = ${queue[currentIndex].name}");
+      MyAudio.play(context, queue[currentIndex]);
+      notifyListeners();
+    }
+    else{
+      Fluttertoast.showToast(msg: "歌曲已全部播放完成~");
+    }
   }
 
-  void _popAll(){
-    _list.clear();
+
+  void pre(BuildContext context){
+    if(currentIndex != 0){
+      currentIndex--;
+      MyAudio.play(context, queue[currentIndex]);
+      notifyListeners();
+    }
+    else{
+      Fluttertoast.showToast(msg: "已经是第一首啦~");
+    }
   }
-
-  void _doTask(BuildContext context){
-    if(_list.length == 0)
-      return;
-    MyAudio.play(context, _list[0]);
-  }
-
-
-
 }

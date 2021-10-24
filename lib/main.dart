@@ -1,81 +1,129 @@
-import 'package:demo/db/MyDB.dart';
-import 'package:demo/db/sp/MySP.dart';
-import 'package:demo/page/HomePage.dart';
-import 'package:demo/provider/PlayStateProvider.dart';
-import 'package:demo/provider/SongProvider.dart';
-import 'package:demo/provider/SongQueueProvider.dart';
-import 'package:demo/routers/MyRouter.dart';
-import 'package:demo/utils/AppVersion.dart';
-import 'package:demo/utils/MyAudio.dart';
+import 'package:music/component/LeaderBoard.dart';
+import 'package:music/component/Mine.dart';
+import 'package:music/component/Search.dart';
+import 'package:music/db/MyDB.dart';
+import 'package:music/db/MySP.dart';
+import 'package:music/provider/SongProvider.dart';
+import 'package:music/provider/SongQueueProvider.dart';
+import 'package:music/provider/SongSheetProvider.dart';
+import 'package:music/utils/AppVersion.dart';
+import 'package:music/utils/MyAudio.dart';
+import 'package:music/utils/MyNotification.dart';
+import 'package:music/widget/PlayBar.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:music/router/MyRouter.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main(){
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => PlayStateProvider()),
-        ChangeNotifierProvider(create: (_) => SongProvider()),
-        ChangeNotifierProvider(create: (_) => SongQueueProvider()),
-      ],
-      child: MyApp(),
-    ),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => SongSheetProvider()),
+          ChangeNotifierProvider(create: (_) => SongQueueProvider()),
+          ChangeNotifierProvider(create: (_) => SongProvider()),
+        ],
+        child: const MyApp(),
+      ),
   );
   init();
-  AppVersion.check();
 }
 
-void init() async{
+Future<void> init() async{
   MyDB();
   MySP();
   MyAudio();
+  MyNotification();
 }
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
+
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     listen(context);
     return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'MyMusic App',
+      title: 'MusicApp',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
-      //initialRoute: MyRouter.HOME,
+      darkTheme: ThemeData.dark(),
+      home: const MyHomePage(title: 'Flutter music Home Page'),
       routes: MyRouter.instance.getRoutes(context),
     );
   }
 
   void listen(BuildContext context) async{
-    // 播放监听：0:00:00:000000
-    MyAudio.player.onAudioPositionChanged.listen((event) {
-      //print(event);
-    });
 
-    // 状态监听
-    MyAudio.player.onPlayerStateChanged.listen((event) {
-      context.read<PlayStateProvider>().setState(event);
-    });
+      // 播放进度
+      MyAudio.player.onAudioPositionChanged.listen((event) {
+          context.read<SongProvider>().currentLrcIndex(event.inMilliseconds);
+          context.read<SongProvider>().setProgress(event.inSeconds);
+          context.read<SongProvider>().setTime(event.inMinutes,event.inSeconds);
+      });
 
-    // 播放完成
-    MyAudio.player.onPlayerCompletion.listen((event) {
-      context.read<SongQueueProvider>().next(context);
-    });
+      // 播放完成
+      MyAudio.player.onPlayerCompletion.listen((event) {
+        context.read<SongQueueProvider>().next(context);
+      });
+
+      // 播放状态
+      MyAudio.player.onPlayerStateChanged.listen((event) {
+        context.read<SongProvider>().setPlayState(event);
+      });
   }
+}
 
-  /*
-  存在问题：
-    1. 下拉加载
-      1.1 先显示加载完成，再显示正在加载
-      1.2 设置加载最大数量，没起作用
-  未实现：
-    1. 底部播放栏 √
-    2. 歌词页
-    3. 播放队列
-    4. 数据库部分
-  UI：
-    1. 排行榜
-  * */
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage>{
+
+  int _currentIndex = 1;
+
+  final List<BottomNavigationBarItem> _bottomNavItems = [
+    BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.alignLeft),title: Container()),
+    BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.home),title: Container()),
+    BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.search),title: Container()),
+  ];
+
+  final _pages = [ LeaderBoard(),Mine(),Search(), ];
+
+  bool isCheck1 = false;int isCheck2 = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    if(!isCheck1 && isCheck2 == 0){
+      isCheck2++;
+      AppVersion.check(context);
+      isCheck1 = false;
+    }
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
+      bottomSheet: PlayBar(),
+      bottomNavigationBar: BottomNavigationBar(
+        items: _bottomNavItems,
+        currentIndex: _currentIndex,
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index){
+          if(index != _currentIndex){
+            setState(() {
+              _currentIndex = index;
+            });
+          }
+        },
+      ),
+    );
+  }
 }

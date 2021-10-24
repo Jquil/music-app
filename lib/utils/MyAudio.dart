@@ -1,75 +1,84 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:demo/api/Service.dart';
-import 'package:demo/model/Song.dart';
-import 'package:demo/provider/PlayStateProvider.dart';
-import 'package:demo/provider/SongProvider.dart';
-import 'package:demo/provider/SongQueueProvider.dart';
-import 'package:demo/widget/CommonWidget.dart';
+import 'package:music/api/ApiService.dart';
+import 'package:music/model/MLrcList.dart';
+import 'package:music/model/MSong.dart';
+import 'package:music/provider/SongProvider.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:music/utils/MyCache.dart';
+import 'package:music/utils/MyNotification.dart';
+import 'package:provider/src/provider.dart';
 
 class MyAudio{
 
-  // https://pub.flutter-io.cn/packages/audioplayers/changelog
-
   static final MyAudio instance = MyAudio._internal();
 
-  factory MyAudio() => instance;
-
   static final AudioPlayer player = AudioPlayer();
+
+  factory MyAudio() => instance;
 
   MyAudio._internal(){
     // todo
   }
 
-  static play(BuildContext context,Song song) async{
-    try{
-      String url = await Service().getRealMusicUrl(song.musicrid);
-      int res = await player.play(url);
-      if(res == 1){
-        context.read<SongProvider>().setSong(song);
+  // 播放
+  static play(BuildContext context,MSong song) async{
+      try{
+        MLrcList lrcList = await ApiService.instance.getLyric(song.musicrid);
+        List time  = song.songTimeMinutes.split(":");
+        int len    = time.length;
+        switch(len){
+          // 分钟
+          case 2:
+            int seconds = int.parse(time[0]) * 60 + int.parse(time[1]);
+            context.read<SongProvider>().setSeconds(seconds);
+            break;
+          // 小时
+          case 3:
+            break;
+        }
+        //print("Time = ${song.songTimeMinutes}");
+        //print(DateTime.now().millisecond);
+        String path = await MyCache.getCachePath(song.musicrid);
+        //print(path);
+        if(path != ""){
+          print("此歌曲播放缓存~");
+          player.play(path,isLocal: true);
+        }
+        else{
+          String url = await ApiService.instance.getPlayUrl(song.musicrid);
+          //print("audio play url = ${url} --- muscirid = ${song.musicrid}");
+          player.play(url);
+        }
+
+        context.read<SongProvider>().resetLrcIndex();
+        context.read<SongProvider>().setData(song);
+        context.read<SongProvider>().setLrcList(lrcList);
+        context.read<SongProvider>().setProgress(0);
+        context.read<SongProvider>().setTime(0, 0);
+        MyNotification.instance.show(song);
       }
+      catch(e){
+        Fluttertoast.showToast(msg: e.toString());
+      }
+  }
+
+  // 暂停
+  static void pause(BuildContext context){
+    if(context.read<SongProvider>().song != null){
+      player.pause();
     }
-    catch(e){
-      print(e.toString());
+    else{
+      Fluttertoast.showToast(msg: "nonono~");
     }
   }
 
-  static AudioPlayerState getState(){
-    return player.state;
-  }
-
-  static void setState(AudioPlayerState state,BuildContext context){
-    if(context.read<SongQueueProvider>().list.length == 0){
-      Scaffold.of(context).showSnackBar(CommonWidget().defaultSnackBar("播放列表中不存在歌曲~"));
-      return;
+  static void resume(BuildContext context){
+    if(context.read<SongProvider>().song != null){
+      player.resume();
     }
-    context.read<PlayStateProvider>().setState(state);
-    switch(state){
-      case AudioPlayerState.PAUSED:
-        player.pause();
-        break;
-      case AudioPlayerState.PLAYING:
-        // 需二次处理
-        player.resume();
-        break;
-      case AudioPlayerState.STOPPED:
-        // TODO: Handle this case.
-        break;
-      case AudioPlayerState.COMPLETED:
-        // TODO: Handle this case.
-        break;
+    else{
+      Fluttertoast.showToast(msg: "nonono~");
     }
   }
-
-
-  /*
-    1. 安装AudioPlayers遇到了很多错误，在不停地换版本试验，最终在18.1成功了
-    2. 在项目build的时候出现：Execution failed for task ':audioplayers:compileDebugKotlin'.
-      https://stackoverflow.com/questions/67832028/execution-failed-for-task-audioplayerscompiledebugkotlin
-      ：android>build.gradle中修改kotlin版本
-    3. 文档
-    https://dengxiaolong.com/article/2019/07/how-to-play-audioplaxyers-in-flutter.html
-  */
 }

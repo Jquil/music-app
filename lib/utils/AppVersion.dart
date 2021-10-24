@@ -1,78 +1,35 @@
 import 'dart:io';
-
-import 'package:demo/api/Service.dart';
-import 'package:demo/http/MyDio.dart';
-import 'package:demo/model/Version.dart';
-import 'package:demo/utils/CommonUtil.dart';
-import 'package:demo/widget/TipUpdate.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
+import 'package:music/api/ApiService.dart';
+import 'package:music/model/MVersion.dart';
+import 'package:music/utils/CommonUtil.dart';
 import 'package:package_info/package_info.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppVersion{
 
-  static Future<void> check() async{
-    bool downloading = false;
-    checkVersion((bool flag,Version version){
-      if(flag){
-        if(downloading)
-          return;
-        downloading = true;
-        checkPermission((int status){
-          switch(status){
-            case 1:
-              // 下载并显示进度
-              showUpdateDialog(version,(TipUpdate widget){
-                widget.state?.showProgress();
-                if(Platform.isAndroid){
-                  download(version.apk,"apk", (int progress,double value,String path){
-                    widget.state?.setValue(value);
-                    if(progress == 100){
-                      installAPK(path);
-                    }
-                  });
-                }
-                else if(Platform.isIOS){
-
-                }
-
-              });
-              break;
-            case 2:
-              print("repeat");
-              break;
-          }
-        });
-      }
-    });
-
-  }
-
-
+  // 1
   static Future<void> checkVersion(Function call) async{
-    bool needToUpdate = false;
+    bool flag = false;
     PackageInfo info = await PackageInfo.fromPlatform();
-    print(info.packageName);
     int now_version = int.parse(info.version.replaceAll(".", ""));
-    Version newestInfo = await Service().getNewestVersion();
+    MVersion newestInfo = await ApiService.instance.getNewestVersion();
+    //print(newestInfo.version);
     int newest_version = int.parse(newestInfo.version.replaceAll(".", ""));
     if(now_version < newest_version){
-      needToUpdate = true;
+      flag = true;
     }
-    call(needToUpdate,newestInfo);
+    call(flag,newestInfo);
   }
 
-  static void showUpdateDialog(Version version,Function call) async{
-    var tipUpdateWidget = TipUpdate(version.content);
+  // 2
+  static void showUpdateDialog(BuildContext context,MVersion version,Function call) async{
     showDialog(
-        context: getContext(),
+        context: context,
         builder: (context){
           return AlertDialog(
             title: Text(version.title),
-            content: tipUpdateWidget,
+            content: getUpdateWidget(version),
             actions: <Widget>[
               FlatButton(
                   child: Text("取消"),
@@ -80,54 +37,55 @@ class AppVersion{
               FlatButton(
                   child: Text("更新 "),
                   onPressed: (){
-                    call(tipUpdateWidget);
+                    call();
+                    Navigator.pop(context, "cancel");
                   }),
             ],
           );
-        });
+        }
+    );
   }
 
-  static void download(String url,String format,Function call) async{
-    print(url);
-    Directory ?dir = await getSavePath();
-    String path = "${dir?.path}/music.$format";
-    print(path);
-    double value = 0;
+  // 3
+  static Future<void> check(BuildContext context) async{
+    checkVersion((bool flag,MVersion version){
+      if(flag){
+        if(Platform.isAndroid){
+          showUpdateDialog(context,version,(){
+            androidUpdate(version);
+          });
+        }
+        else if(Platform.isIOS){
 
-    MyDio.dio.download(url, path,options:Options(method: "GET"),onReceiveProgress:(received, total){
-        value = received / total;
-        call(int.parse((value * 100).toStringAsFixed(0)),value,path);
+        }
+      }
     });
   }
 
-
-  static void checkPermission(Function call) async{
-    Map<Permission, PermissionStatus> map = await [
-      Permission.requestInstallPackages,
-      Permission.storage,
-    ].request();
-
-//    PermissionStatus status1 = await Permission.requestInstallPackages.request();
-//    PermissionStatus status2 = await Permission.storage.request();
-//    bool b1 = await Permission.requestInstallPackages.isGranted,
-//         b2 = await Permission.storage.isGranted;
-//    print("$b1 -- $b2");
-//
-    if(map[Permission.storage] == PermissionStatus.granted){
-        call(1);
-    }
-    else{
-      call(2);
-    }
+  // android更新
+  static void androidUpdate(MVersion version) async{
+    // 打开浏览器下载更新
+    var url = version.apk;
+    await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
   }
 
 
-  static Future<Directory?> getSavePath() async{
-    return getExternalStorageDirectory();
+  // ios更新
+  static void iosUpdate(){
+
   }
 
 
-  static void installAPK(String path) async{
-    OpenFile.open(path);
+  // widget
+  static Widget getUpdateWidget(MVersion version){
+    List<Widget> content = [];
+    for(var i = 0; i < version.content.length; i++){
+      content.add(CommonUtil.content(text: version.content[i].toString()));
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: content,
+    );
   }
 }
