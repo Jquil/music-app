@@ -143,3 +143,7 @@
 26. [Flutter 背景渐变色](https://www.webascii.cn/article/5ef2cb74071be112473165e4)
 
 27. [flutter_local_notifications 填坑](https://blog.csdn.net/Katie_fly/article/details/109694116)
+
+28. [快速适配 Flutter 之深色模式](https://zhuanlan.zhihu.com/p/138530205) 以及 [Flutter 夜间模式及字体设置](https://blog.csdn.net/weixin_44819566/article/details/109627337)
+
+29. [好看的背景色1](https://webkul.github.io/coolhue/) | [好看的背景色2](https://webgradients.com/) | [好看的背景色3](https://uigradients.com/#Orca)
